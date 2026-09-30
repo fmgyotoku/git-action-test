@@ -20,5 +20,3 @@ jobs:
         run: |
           chmod +x scripts/hello.sh
           ./scripts/hello.sh "$NAME"
-  # Use this YAML in your workflow file for each job
-  runs-on: self-hosted
