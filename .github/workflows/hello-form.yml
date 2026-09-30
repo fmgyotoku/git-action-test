@@ -1,0 +1,36 @@
+name: Hello Form
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Your name"
+        required: true
+        default: "World"
+        type: string
+      environment:
+        description: "Target environment"
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+        default: dev
+      verbose:
+        description: "Verbose output?"
+        type: boolean
+        default: false
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say hello
+        run: |
+          echo "Hello, ${{ inputs.name }}!"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Verbose: ${{ inputs.verbose }}"
+
+      - name: Extra detail
+        if: ${{ inputs.verbose }}
+        run: uname -a
