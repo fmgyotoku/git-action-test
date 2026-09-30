@@ -1,0 +1,25 @@
+name: Run script on WSL
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Name to greet"
+        default: "World"
+        type: string
+
+jobs:
+  run-script:
+    runs-on: [self-hosted, linux, wsl]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run script
+        env:
+          NAME: ${{ inputs.name }}
+        run: |
+          chmod +x scripts/hello.sh
+          ./scripts/hello.sh "$NAME"
+
+# Use this YAML in your workflow file for each job
+runs-on: self-hosted
