@@ -1,0 +1,66 @@
+name: Three-step with approvals
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Name used in the messages"
+        default: "World"
+        type: string
+      target:
+        description: "Target environment label"
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+        default: dev
+      dry_run:
+        description: "Dry run (skip real work)?"
+        type: boolean
+        default: true
+
+jobs:
+  step1:
+    name: Step 1 - Prepare
+    runs-on: [self-hosted, linux, wsl]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare
+        env:
+          NAME: ${{ inputs.name }}
+          TARGET: ${{ inputs.target }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          echo "Step 1: preparing for $NAME on $TARGET (dry run: $DRY_RUN)"
+          uname -a
+          date
+
+  step2:
+    name: Step 2 - Execute (needs approval)
+    needs: step1
+    runs-on: [self-hosted, linux, wsl]
+    environment: gate-step2        # pauses here until approved
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute
+        env:
+          NAME: ${{ inputs.name }}
+          TARGET: ${{ inputs.target }}
+        run: |
+          echo "Step 2: executing for $NAME on $TARGET"
+          sleep 5
+
+  step3:
+    name: Step 3 - Finalize (needs approval)
+    needs: step2
+    runs-on: [self-hosted, linux, wsl]
+    environment: gate-step3        # pauses here until approved
+    steps:
+      - uses: actions/checkout@v4
+      - name: Finalize
+        env:
+          NAME: ${{ inputs.name }}
+        run: |
+          echo "Step 3: finalizing for $NAME"
+          date
