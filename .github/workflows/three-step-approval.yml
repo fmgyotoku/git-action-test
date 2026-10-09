@@ -23,7 +23,7 @@ on:
 jobs:
   step1:
     name: Step 1 - Prepare
-    runs-on: [self-hosted, linux, wsl]
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - name: Prepare
@@ -39,7 +39,7 @@ jobs:
   step2:
     name: Step 2 - Execute (needs approval)
     needs: step1
-    runs-on: [self-hosted, linux, wsl]
+    runs-on: self-hosted
     environment: gate-step2        # pauses here until approved
     steps:
       - uses: actions/checkout@v4
@@ -54,7 +54,7 @@ jobs:
   step3:
     name: Step 3 - Finalize (needs approval)
     needs: step2
-    runs-on: [self-hosted, linux, wsl]
+    runs-on: self-hosted
     environment: gate-step3        # pauses here until approved
     steps:
       - uses: actions/checkout@v4
